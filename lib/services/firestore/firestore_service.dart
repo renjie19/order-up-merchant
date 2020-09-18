@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:order_up_merchant/commons/models/account.dart';
 import 'package:order_up_merchant/commons/models/order.dart';
-import 'package:order_up_merchant/commons/models/user.dart';
 import 'package:order_up_merchant/commons/utils/order_util.dart';
 import 'package:order_up_merchant/commons/utils/user_util.dart';
 import 'package:order_up_merchant/services/auth/auth_service.dart';
@@ -19,19 +18,15 @@ class FirestoreService {
 
   /// ACCOUNT
 
-  Future<Account> create(Account account, password) async {
-    AuthResult result = await _authService.signUp(account.user.email, password);
-    if (result != null) {
-      account.user.id = result.user.uid;
-      var document = _merchantCollection.document(account.user.id);
-      await document.setData(UserUtil.toMap(account.user));
-    }
+  Account create(Account account) {
+    var document = _merchantCollection.document(account.user.id);
+    document.setData(UserUtil.toMap(account.user));
     return account;
   }
 
-  Future<Account> update(Account account) async {
+  Account update(Account account) {
     var document = _merchantCollection.document(account.user.id);
-    await document.updateData(UserUtil.toMap(account.user));
+    document.updateData(UserUtil.toMap(account.user));
     return account;
   }
 
@@ -42,15 +37,15 @@ class FirestoreService {
 
     if (documentSnapshot.exists) {
       account.user = UserUtil.toEntity(documentSnapshot.data);
-      account.orders = findOrdersByMerchant(id) ?? [];
+      account.orders = await findOrdersByMerchant(id) ?? [];
     }
     return account;
   }
 
   /// ORDERS
 
-  Future<Order> updateOrder(Order order) async {
-    await _orderCollection
+  Order updateOrder(Order order) {
+    _orderCollection
         .document(order.id)
         .updateData(OrderUtil.toMap(order));
     return order;
@@ -72,8 +67,7 @@ class FirestoreService {
   Stream<List<Order>> orderUpdates(String id) {
     return _orderCollection
         .where('merchantId', isEqualTo: id)
-        .getDocuments()
-        .asStream()
+        .snapshots()
         .asyncMap((event) => OrderUtil.documentsToEntities(event.documents));
   }
 }

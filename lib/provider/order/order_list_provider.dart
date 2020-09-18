@@ -16,7 +16,7 @@ class OrderListProvider extends ChangeNotifier {
   }
 
   void _initStream() {
-    _orderService.listenToChanges().listen((event) {
+    _orderService.listenToChanges.listen((event) {
       _orders = event;
       notifyListeners();
     });

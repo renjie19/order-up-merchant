@@ -1,18 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:order_up_merchant/commons/models/item.dart';
+import 'package:order_up_merchant/commons/utils/audit_trail_util.dart';
 
 class ItemUtil {
   static Map<String, Object> toMap(Item item) {
     if(item == null) {
       return null;
     }
-    return {
+    Map<String, Object> map = {
       'name' : item.name,
-      'quatity' : item.quantity,
+      'quantity' : item.quantity,
       'package' : item.package,
       'price' : item.price
     };
-
+    AuditTrailUtil.toMap(item, map);
+    return map;
   }
 
   static Item toEntity(Map<String, Object> map) {
@@ -20,6 +22,7 @@ class ItemUtil {
       return null;
     }
     Item item = Item();
+    AuditTrailUtil.toEntity(map, item);
     item.name = map['name'];
     item.quantity = map['quantity'];
     item.package = map['package'];
@@ -28,6 +31,9 @@ class ItemUtil {
   }
 
   static List<Item> toEntities(List<Map<String, Object>> maps) {
+    if(maps.isEmpty) {
+      return null;
+    }
     return maps.map((e) => toEntity(e)).toList();
   }
 

@@ -19,7 +19,7 @@ class OrderService {
     return await _firestoreService.findOrder(id);
   }
 
-  Stream<List<Order>> listenToChanges() {
+  Stream<List<Order>> get listenToChanges {
     return _firestoreService.orderUpdates(_tracker.getUserId());
   }
 }

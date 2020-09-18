@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:order_up_merchant/commons/utils/user_tracker.dart';
+import 'package:order_up_merchant/pages/login.dart';
+import 'package:order_up_merchant/pages/start_page.dart';
 import 'package:order_up_merchant/provider/auth_provider/auth_provider.dart';
 import 'package:order_up_merchant/provider/order/order_list_provider.dart';
+import 'package:order_up_merchant/services/account/account_service.dart';
 import 'package:order_up_merchant/services/auth/fire_base_auth.dart';
 import 'package:order_up_merchant/services/firestore/firestore_service.dart';
 import 'package:order_up_merchant/services/order/order_service.dart';
@@ -22,6 +25,7 @@ class _HomeState extends State<Home> {
     GetIt.I.registerSingleton<OrderService>(OrderService());
     GetIt.I.registerSingleton<AuthProvider>(AuthProvider());
     GetIt.I.registerSingleton<OrderListProvider>(OrderListProvider());
+    GetIt.I.registerSingleton<AccountService>(AccountService());
     super.initState();
   }
 
@@ -38,7 +42,7 @@ class _HomeState extends State<Home> {
 class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return context.watch<AuthProvider>().userId == null ? Scaffold(backgroundColor: Colors.green,) : Scaffold();
+    return context.watch<AuthProvider>().userId == null ? Login() : StartPage();
   }
 }
 

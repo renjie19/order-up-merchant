@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:order_up_merchant/commons/models/order.dart';
 import 'package:order_up_merchant/commons/utils/audit_trail_util.dart';
 import 'package:order_up_merchant/commons/utils/item_util.dart';
+import 'package:order_up_merchant/commons/utils/payment_info_util.dart';
 import 'package:order_up_merchant/commons/utils/user_util.dart';
 
 class OrderUtil {
@@ -15,7 +16,7 @@ class OrderUtil {
     map['user'] = UserUtil.toMap(order.user);
     map['items'] = ItemUtil.toMapList(order.items);
     map['status'] = order.status;
-    // TODO map payments once implemented
+    map['payments'] = PaymentInfoUtil.toMaps(order.payments);
     return map;
   }
 
@@ -27,9 +28,9 @@ class OrderUtil {
     AuditTrailUtil.toEntity(map, order);
     order.merchantId = map['merchantId'];
     order.user = UserUtil.toEntity( map['user']);
-    order.items = ItemUtil.toEntities(map['items']);
+    order.items = ItemUtil.toEntities(List.from(map['items']).cast<Map<String, Object>>());
     order.status = map['status'];
-    // TODO  map payment info
+    order.payments = PaymentInfoUtil.toEntities(map['payments']);
     return order;
   }
 

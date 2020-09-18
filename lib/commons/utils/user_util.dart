@@ -9,10 +9,12 @@ class UserUtil {
     user.lastName = map['lastName'];
     user.location = map['location'];
     user.birthDate = map['birthDate'];
+    user.age = map['age'];
     user.gender = map['gender'];
     user.email = map['email'];
     user.contactNo = map['contactNo'];
     user.store = map['store'];
+    return user;
   }
 
   static Map<String, Object> toMap(User user) {
